@@ -14,6 +14,9 @@ const connectDB = require("./db/connect");
 // logs
 const morgan = require("morgan");
 
+//cookie access
+const cookieParser = require("cookie-parser");
+
 //middleware
 const notFoundMiddleware = require("./middleware/not-found.js");
 const errorHandlerMiddleware = require("./middleware/error-handler.js");
@@ -22,9 +25,17 @@ const errorHandlerMiddleware = require("./middleware/error-handler.js");
 app.use(morgan("tiny"));
 // for req.body
 app.use(express.json());
+// for cookie (if argument means signing our cookies)
+app.use(cookieParser(process.env.JWT_SECRET));
+//static files
+app.use(express.static("./public"));
 
 //routes
 app.get("/", (req, res) => {
+  res.send("<h1>Ecommerce Website</h1>");
+});
+app.get("/api/v1", (req, res) => {
+  console.log(req.signedCookies);
   res.send("<h1>Ecommerce Website</h1>");
 });
 app.use("/api/v1/auth", authRouter);
