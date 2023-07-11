@@ -17,4 +17,27 @@ const authenticateUser = async (req, res, next) => {
   }
 };
 
-module.exports = { authenticateUser };
+// for callback  function
+// const authorizePermissions = (req, res, next) => {
+//   // console.log("admin route");
+//   if (req.user.role !== "admin") {
+//     throw new CustomError.UnauthorizedError(
+//       "Unauthorized to access this route"
+//     );
+//   }
+//   next();
+// };
+
+// if direct function is calling with arguments
+const authorizePermissions = (...roles) => {
+  return (req, res, next) => {
+    if (!roles.includes(req.user.role)) {
+      throw new CustomError.UnauthorizedError(
+        "Unauthorized to access this route"
+      );
+    }
+    next();
+  };
+};
+
+module.exports = { authenticateUser, authorizePermissions };
