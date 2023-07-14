@@ -32,6 +32,13 @@ const UserSchema = new mongoose.Schema({
 });
 
 UserSchema.pre("save", async function () {
+  //to check which properties are changing
+  //console.log(this.modifiedPaths());
+  //console.log(this.isModified('nama'));
+  //if we try to use it for update user it will hash the password again creating double hash and our password invalid , therefore we use above methods to solve it
+
+  if (!this.isModified("password")) return;
+
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
 });
