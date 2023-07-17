@@ -63,7 +63,19 @@ const ProductSchema = mongoose.Schema(
       required: true,
     },
   },
-  { timestamps: true }
+  { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } }
+  // if we want to show all reviews for a product we don't have a ref, but review has a reference so there we can use populate but not here.
+  //so we will use virtuals
+  // also virtuals cannot be queried;
 );
+
+//here we will tell how to join documents
+ProductSchema.virtual("reviews", {
+  ref: "Review",
+  localField: "_id",
+  foreignField: "product",
+  justOne: false,
+  // match: { rating: 3 },
+});
 
 module.exports = mongoose.model("Product", ProductSchema);

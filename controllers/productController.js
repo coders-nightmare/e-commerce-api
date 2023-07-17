@@ -14,7 +14,8 @@ const getAllProducts = async (req, res) => {
 };
 const getSingleProduct = async (req, res) => {
   const { id: productId } = req.params;
-  const product = await Product.findById(productId);
+  // as there is no reference of reviews in product schema therefore we use virtuals to populate
+  const product = await Product.findById(productId).populate("reviews");
   if (!product) {
     throw new CustomError.NotFoundError(`No product with id : ${productId}`);
   }
