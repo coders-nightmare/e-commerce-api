@@ -57,6 +57,10 @@ const ProductSchema = mongoose.Schema(
       type: Number,
       default: 0,
     },
+    numOfReviews: {
+      type: Number,
+      default: 0,
+    },
     user: {
       type: mongoose.Types.ObjectId,
       ref: "User",
@@ -76,6 +80,11 @@ ProductSchema.virtual("reviews", {
   foreignField: "product",
   justOne: false,
   // match: { rating: 3 },
+});
+
+//Here we want to delete all reviews that are associated with a product by accessing Review model and passing current product id to attribute of Review model that holds product id('product') using pre function
+ProductSchema.pre("remove", async function (next) {
+  await this.model("Review").deleteMany({ product: this._id });
 });
 
 module.exports = mongoose.model("Product", ProductSchema);

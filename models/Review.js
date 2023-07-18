@@ -33,4 +33,16 @@ const ReviewSchema = mongoose.Schema(
 //if we want to set multiple field to be unique then we have to add index field saperately
 //i.e. we want single review on a product by a user
 ReviewSchema.index({ product: 1, user: 1 }, { unique: true });
+
+// static function i.e. schema/class methods
+ReviewSchema.statics.calculateAverageRating = async function (productId) {
+  console.log(productId);
+};
+
+ReviewSchema.post("save", async function () {
+  await this.constructor.calculateAverageRating(this.product);
+});
+ReviewSchema.post("remove", async function () {
+  await this.constructor.calculateAverageRating(this.product);
+});
 module.exports = mongoose.model("Review", ReviewSchema);
