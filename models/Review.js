@@ -36,9 +36,33 @@ ReviewSchema.index({ product: 1, user: 1 }, { unique: true });
 
 // static function i.e. schema/class methods
 ReviewSchema.statics.calculateAverageRating = async function (productId) {
-  console.log(productId);
+  //setting the aggregate functionality to find averageRating and count
+
+  const result = await this.aggregate([
+    { $match: { product: productId } }, //filter reviews with same product id
+    {
+      $group: {
+        //to group by _id
+        _id: null, //null as we already match with productId it remain same , so if we pass productId it has same effect
+        averageRating: { $avg: "$rating" }, //fields we want after grouping
+        numOfReviews: { $sum: 1 },
+      },
+    },
+  ]);
+
+  try {
+    //accessing current Product model and updating values
+    await this.model("Product").findByIdAndUpdate(productId, {
+      //coalesing i.e it is optional chaining i.e. result[0].averageRating gives undefined or null it returns 0
+      averageRating: Math.ceil(result[0]?.averageRating || 0),
+      numOfReviews: result[0]?.numOfReviews || 0,
+    });
+  } catch (error) {
+    console.log(error);
+  }
 };
 
+//to access class methods we use this.constructor
 ReviewSchema.post("save", async function () {
   await this.constructor.calculateAverageRating(this.product);
 });
