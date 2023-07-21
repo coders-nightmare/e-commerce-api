@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const SingleCartItemSchema = mongoose.Schema({
+const SingleOrderItemSchema = mongoose.Schema({
   name: {
     type: String,
     required: true,
@@ -43,7 +43,7 @@ const OrderSchema = mongoose.Schema(
       required: true,
     },
     //we can set schema as a type in other schema
-    cartItem: [SingleCartItemSchema],
+    orderItems: [SingleOrderItemSchema],
     status: {
       type: String,
       enum: ["pending", "failed", "paid", "delivered", "canceled"],
