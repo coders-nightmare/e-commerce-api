@@ -50,8 +50,8 @@ app.use(cors());
 app.use(xss());
 app.use(mongoSanitize());
 
-// for logs
-app.use(morgan("tiny"));
+// // for logs
+// app.use(morgan("tiny"));
 // for req.body
 app.use(express.json());
 // for cookie (if argument means signing our cookies)
@@ -62,13 +62,7 @@ app.use(express.static("./public"));
 app.use(fileUpload());
 
 //routes
-app.get("/", (req, res) => {
-  res.send("<h1>Ecommerce Website</h1>");
-});
-app.get("/api/v1", (req, res) => {
-  console.log(req.signedCookies);
-  res.send("<h1>Ecommerce Website</h1>");
-});
+
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/products", productRouter);
